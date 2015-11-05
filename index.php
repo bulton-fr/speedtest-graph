@@ -24,6 +24,12 @@ function generateJsonUtcData(&$datas, $type)
 	
 	return $return;
 }
+
+$yAxisType = 'linear';
+if(isset($_GET['log']))
+{
+	$yAxisType = 'logarithmic';
+}
 ?>
 <html lang="fr">
 <head>
@@ -37,6 +43,7 @@ function generateJsonUtcData(&$datas, $type)
 				 $firstDate->format('d,H,i,s');
 		?>);
 		
+		var yAxisType    = "<?php echo $yAxisType; ?>";
 		var PingData     = [<?php echo generateJsonUtcData($datas, 'ping'); ?>];
 		var DownloadData = [<?php echo generateJsonUtcData($datas, 'down'); ?>];
 		var UploadData   = [<?php echo generateJsonUtcData($datas, 'up'); ?>];

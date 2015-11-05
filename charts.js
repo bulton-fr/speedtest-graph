@@ -20,10 +20,13 @@ var Charts = (function(jQuery)
 		this.firstDate = options.firstDate || Date.UTC();
 		
 		options.highcharts = options.highcharts || {};
+		options.highcharts.yAxisType     = options.highcharts.yAxisType || 'linear';
 		options.highcharts.tickInterval  = options.highcharts.tickInterval || (24 * 3600 * 1000);
 		options.highcharts.pointInterval = options.highcharts.pointInterval || 60;
 		
 		this.highchartsOptions = options.highcharts;
+		
+		this.chart = null;
 	}
 	
 	Charts.prototype.highcharts = function highcharts(data)
@@ -44,7 +47,22 @@ var Charts = (function(jQuery)
 			throw Error('#'+this.divID+' not found by jQuery');
 		}
 		
-		jqDivID.highcharts({
+		var highchartsDefaultMenu = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
+		//var highchartsMenu = Object.clone(highchartsDefaultMenu); //Not work in chrome
+		//var highchartsMenu = jQuery.extend(true, {}, highchartsDefaultMenu); //Create a object, not a array
+		var highchartsMenu = JSON.parse(JSON.stringify(highchartsDefaultMenu));
+		
+		highchartsMenu.push({separator: true});
+		highchartsMenu.push({
+			text: 'Logarithme',
+			onclick: jQuery.proxy(this.HClog, this)
+		});
+		highchartsMenu.push({
+			text: 'Linear',
+			onclick: jQuery.proxy(this.HClin, this)
+		});
+		
+		this.chart = jqDivID.highcharts({
 			colors: [this.color],
 			chart: {type: 'area'},
 			title: {text: this.title},
@@ -54,6 +72,7 @@ var Charts = (function(jQuery)
 				tickInterval: this.highchartsOptions.tickInterval
 			},
 			yAxis: {
+				type: this.highchartsOptions.yAxisType,
 				title: {text: this.yTitle},
 				labels: {formatter: function () {return this.value;}}
 			},
@@ -62,9 +81,28 @@ var Charts = (function(jQuery)
 				pointStart: this.firstDate,
 				showInLegend: false,
 				data: data
-			}]
+			}],
+			exporting: {
+				buttons: {
+					contextButton: {
+						menuItems : highchartsMenu
+					}
+				}
+			}
 		});
 	}
+	
+	Charts.prototype.HClog = function HClog()
+	{
+		var yAxis = this.chart.highcharts().yAxis[0];
+		yAxis.update({type: 'logarithmic'});
+	};
+	
+	Charts.prototype.HClin = function HClin()
+	{
+		var yAxis = this.chart.highcharts().yAxis[0];
+		yAxis.update({type: 'linear'});
+	};
 	
 	return Charts;
 })(jQuery);
