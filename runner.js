@@ -9,7 +9,10 @@ jQuery(document).ready(function()
 		divID: '#graph_ping',
 		title: 'Ping',
 		yTitle: 'ms',
-		firstDate: firstDate
+		firstDate: firstDate,
+		highcharts: {
+			yAxisType: yAxisType
+		}
 	});
 	ChartPing.highcharts(PingData);
 	
@@ -18,7 +21,10 @@ jQuery(document).ready(function()
 		color: '#90ed7d',
 		title: 'Download',
 		yTitle: 'Mbit/s',
-		firstDate: firstDate
+		firstDate: firstDate,
+		highcharts: {
+			yAxisType: yAxisType
+		}
 	});
 	ChartDown.highcharts(DownloadData);
 	
@@ -27,7 +33,10 @@ jQuery(document).ready(function()
 		color: '#f45b5b',
 		title: 'Upload',
 		yTitle: 'Mbit/s',
-		firstDate: firstDate
+		firstDate: firstDate,
+		highcharts: {
+			yAxisType: yAxisType
+		}
 	});
 	ChartUp.highcharts(UploadData);
 });
